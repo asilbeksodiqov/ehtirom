@@ -1,782 +1,114 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Xaydovchi Hisoboti | Smart km & Ish haqi</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  :root {
-    --bg: #F5F4F0;
-    --surface: #FFFFFF;
-    --surface2: #EFEFEB;
-    --border: #E2E1DB;
-    --text: #1A1A18;
-    --text-soft: #6B6B65;
-    --accent: #2D5BE3;
-    --accent-light: #EEF2FD;
-    --accent-dark: #1E3FA0;
-    --success: #1A7A4A;
-    --success-light: #E8F5EE;
-    --danger: #C0392B;
-    --danger-light: #FDEEEC;
-    --radius: 18px;
-    --radius-sm: 12px;
-    --shadow: 0 4px 14px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.05);
-    --shadow-lg: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
-  }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 16px 56px;
-  }
-
-  .app-header {
-    width: 100%;
-    max-width: 560px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 24px;
-    padding: 0 4px;
-  }
-  .app-logo {
-    width: 44px;
-    height: 44px;
-    background: var(--accent);
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 6px 12px -8px rgba(45, 91, 227, 0.3);
-  }
-  .app-logo svg { width: 24px; height: 24px; fill: white; }
-  .app-name { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: var(--text); }
-  .app-tagline { font-size: 12px; color: var(--text-soft); font-weight: 400; margin-top: 2px; }
-
-  .progress-wrap {
-    width: 100%;
-    max-width: 560px;
-    margin-bottom: 20px;
-    display: none;
-  }
-  .progress-steps {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .step-dot {
-    flex: 1;
-    height: 5px;
-    border-radius: 99px;
-    background: var(--border);
-    transition: all 0.2s;
-  }
-  .step-dot.active { background: var(--accent); }
-  .step-dot.done { background: var(--accent); opacity: 0.45; }
-  .progress-label {
-    font-size: 12px;
-    color: var(--text-soft);
-    margin-top: 10px;
-    font-weight: 500;
-    text-align: center;
-  }
-
-  .card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-    width: 100%;
-    max-width: 560px;
-    overflow: hidden;
-    animation: fadeSlide 0.3s ease;
-  }
-  @keyframes fadeSlide {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .card-header {
-    padding: 24px 24px 0;
-  }
-  .card-tag {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    color: var(--accent);
-    background: var(--accent-light);
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 40px;
-    margin-bottom: 14px;
-  }
-  .card-title {
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1.25;
-    letter-spacing: -0.5px;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-  .card-sub {
-    font-size: 14px;
-    color: var(--text-soft);
-    line-height: 1.45;
-  }
-  .card-body {
-    padding: 20px 24px;
-  }
-  .card-footer {
-    padding: 8px 24px 24px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
-
-  .guide-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 4px;
-  }
-  .guide-item {
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-  }
-  .guide-num {
-    width: 32px;
-    height: 32px;
-    background: var(--accent);
-    color: white;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 14px;
-    flex-shrink: 0;
-  }
-  .guide-text strong {
-    display: block;
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  .guide-text span {
-    font-size: 13px;
-    color: var(--text-soft);
-    line-height: 1.45;
-  }
-
-  .field {
-    margin-bottom: 20px;
-  }
-  label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-soft);
-    margin-bottom: 7px;
-  }
-  input, select {
-    width: 100%;
-    height: 52px;
-    padding: 0 16px;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    background: var(--surface);
-    transition: all 0.2s;
-    outline: none;
-  }
-  input:focus, select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(45, 91, 227, 0.12);
-  }
-  .row-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-  .date-control {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  .date-control input[type="date"] {
-    flex: 1;
-    height: 52px;
-  }
-  .date-btn {
-    width: 52px;
-    height: 52px;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--surface2);
-    font-size: 22px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text);
-  }
-  .date-btn:active { transform: scale(0.96); background: var(--accent); color: white; border-color: var(--accent); }
-
-  .driver-banner {
-    background: var(--surface2);
-    border-radius: 16px;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 24px;
-    border: 1px solid var(--border);
-  }
-  .driver-avatar {
-    width: 48px;
-    height: 48px;
-    background: var(--accent);
-    border-radius: 99px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 20px;
-    color: white;
-    flex-shrink: 0;
-  }
-  .driver-info .name {
-    font-weight: 700;
-    font-size: 16px;
-  }
-  .driver-info .stats {
-    font-size: 12px;
-    color: var(--text-soft);
-    margin-top: 4px;
-  }
-
-  .collapse-section {
-    margin-top: 28px;
-    border-top: 1px solid var(--border);
-    padding-top: 16px;
-  }
-  .collapse-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    padding: 8px 0;
-    user-select: none;
-  }
-  .collapse-header h4 {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-soft);
-    letter-spacing: -0.2px;
-  }
-  .collapse-icon {
-    font-size: 20px;
-    transition: transform 0.2s ease;
-    color: var(--accent);
-    font-weight: 500;
-  }
-  .collapse-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s cubic-bezier(0.33, 1, 0.68, 1);
-  }
-  .collapse-content.open {
-    max-height: 800px;
-  }
-  .days-log {
-    background: var(--surface2);
-    border-radius: 16px;
-    overflow: hidden;
-    margin-top: 12px;
-  }
-  .days-log-header {
-    padding: 12px 16px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-soft);
-    border-bottom: 1px solid var(--border);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .days-log-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
-  }
-  .days-log-row:last-child { border: none; }
-  .d-label { font-weight: 500; color: var(--text); }
-  .d-km { font-family: 'DM Mono', monospace; font-weight: 500; color: var(--success); }
-
-  .btn {
-    height: 48px;
-    padding: 0 22px;
-    border-radius: 14px;
-    font-weight: 600;
-    font-size: 14px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
-    font-family: inherit;
-  }
-  .btn-primary {
-    background: var(--accent);
-    color: white;
-  }
-  .btn-primary:active { transform: scale(0.97); background: var(--accent-dark); }
-  .btn-ghost {
-    background: transparent;
-    border: 1.5px solid var(--border);
-    color: var(--text-soft);
-  }
-  .btn-ghost:active { background: var(--surface2); }
-  .btn-success {
-    background: var(--success);
-    color: white;
-  }
-  .btn-success:active { transform: scale(0.97); background: #155e38; }
-
-  /* RESULT SECTION: summary cards ABOVE table */
-  .result-summary-area {
-    margin-bottom: 28px;
-  }
-  .summary-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 28px;
-  }
-  .summary-card {
-    background: var(--surface2);
-    border-radius: 18px;
-    padding: 16px 12px;
-    border: 1px solid var(--border);
-    text-align: center;
-  }
-  .summary-card.highlight {
-    background: var(--accent-light);
-    border-color: rgba(45,91,227,0.3);
-  }
-  .sc-label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: var(--text-soft);
-    margin-bottom: 8px;
-    letter-spacing: 0.4px;
-  }
-  .sc-value {
-    font-family: 'DM Mono', monospace;
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.2;
-  }
-  .summary-card.highlight .sc-value { color: var(--accent); }
-
-  .result-section-title {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    margin-bottom: 14px;
-    color: var(--text-soft);
-  }
-  .result-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-  .result-table th {
-    text-align: left;
-    padding: 10px 8px;
-    background: var(--surface2);
-    font-weight: 600;
-    font-size: 11px;
-    color: var(--text-soft);
-  }
-  .result-table td {
-    padding: 12px 8px;
-    border-bottom: 1px solid var(--border);
-  }
-  .result-table td.num {
-    text-align: right;
-    font-family: 'DM Mono', monospace;
-  }
-  .km-highlight { color: var(--success); font-weight: 500; }
-
-  .action-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 20px 24px 28px;
-    border-top: 1px solid var(--border);
-    margin-top: 8px;
-  }
-  .action-row .btn {
-    flex: 1;
-    justify-content: center;
-  }
-  .error-msg {
-    background: var(--danger-light);
-    color: var(--danger);
-    border-radius: 14px;
-    padding: 12px;
-    font-size: 13px;
-    margin-top: 12px;
-    display: none;
-  }
-  .error-msg.show { display: block; }
-  .hidden { display: none !important; }
-
-  @media (max-width: 480px) {
-    .card-header, .card-body, .card-footer { padding-left: 18px; padding-right: 18px; }
-    .row-2 { grid-template-columns: 1fr; gap: 12px; }
-    .summary-cards { grid-template-columns: 1fr; gap: 10px; }
-    .btn { height: 46px; font-size: 13px; padding: 15px;}
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Diss — Qaydlar</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-<div class="app-header">
-  <div class="app-logo"><svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg></div>
-  <div><div class="app-name">Xaydovchi Hisoboti</div><div class="app-tagline">Km · Ish haqi · Smart hisob</div></div>
-</div>
-
-<div class="progress-wrap" id="progressWrap"><div class="progress-steps" id="progressSteps"></div><div class="progress-label" id="progressLabel"></div></div>
-
-<!-- PAGE 1 WELCOME -->
-<div class="card" id="page1">
-  <div class="card-header"><div class="card-tag">Xush kelibsiz</div><div class="card-title">Xaydovchi hisobot<br>tizimi</div><div class="card-sub">Kunlik spidometr asosida avtomatik km va ish haqi hisobi</div></div>
-  <div class="card-body"><div class="guide-list"><div class="guide-item"><div class="guide-num">1</div><div class="guide-text"><strong>Xaydovchini tanlang</strong><span>Hisobot kimga tegishli</span></div></div><div class="guide-item"><div class="guide-num">2</div><div class="guide-text"><strong>Kunlik ma'lumot</strong><span>Ertalab va kechqurun ko'rsatkichlarini kiriting</span></div></div><div class="guide-item"><div class="guide-num">3</div><div class="guide-text"><strong>Hisobot & Yuklash</strong><span>Jami km, o'rtacha, ish haqi va XLSX</span></div></div></div></div>
-  <div class="card-footer"><button class="btn btn-primary" onclick="goPage(2)">Hisobot tayyorlash →</button></div>
-</div>
-
-<!-- PAGE 2 DRIVER -->
-<div class="card hidden" id="page2">
-  <div class="card-header"><div class="card-tag">Qadam 1 / 2</div><div class="card-title">Xaydovchi</div><div class="card-sub">Hisobot kimga tegishli?</div></div>
-  <div class="card-body"><div class="field"><label for="driverSelect">Ism va familiya</label><select id="driverSelect"><option value="">— Tanlang —</option><option>Abbos aka</option><option>Adxam aka</option><option>Saddamxon</option></select></div><div id="errDriver" class="error-msg">Iltimos, xaydovchini tanlang</div></div>
-  <div class="card-footer"><button class="btn btn-ghost" onclick="goPage(1)">Orqaga</button><button class="btn btn-primary" onclick="confirmDriver()">Keyingi →</button></div>
-</div>
-
-<!-- PAGE 3 DAILY INPUT -->
-<div class="card hidden" id="page3">
-  <div class="card-header"><div class="card-tag">Qadam 2 / 2</div><div class="card-title">Kunlik ma'lumot</div></div>
-  <div class="card-body">
-    <div class="driver-banner" id="driverBanner">
-      <div class="driver-avatar" id="driverInitialAvatar">A</div>
-      <div class="driver-info"><div class="name" id="driverNameTop"></div><div class="stats" id="driverStatsTop">0 kun kiritildi</div></div>
-    </div>
-    <div class="field" style="display: none;"><label>Kun tartibi</label><div class="day-badge" style="background:var(--accent-light); border-radius:40px; padding:8px 16px; font-size:13px; font-weight:600; display:inline-flex; align-items:center; gap:8px;"><span>📅</span><span id="dayCounterText">1-kun</span></div></div>
-    
-    <div class="field"><label>Sana</label><div class="date-control"><button class="date-btn" onclick="adjustDate(-1)">−</button><input type="date" id="dateInput"><button class="date-btn" onclick="adjustDate(1)">+</button></div></div>
-    <div class="row-2"><div class="field"><label for="spidEarly">🏁 Ertalabki holat (km)</label><input type="number" id="spidEarly" placeholder="0"></div>
-    <div class="field"><label for="spidEvening">🌙 Kechqurungi holat (km)</label><input type="number" id="spidEvening" placeholder="0"></div></div>
-    <div id="errDay" class="error-msg"></div>
-    
-    <div class="collapse-section" id="collapseSection">
-      <div class="collapse-header" onclick="toggleCollapse()">
-        <h4>📋 Kiritilgan kunlar</h4>
-        <span class="collapse-icon" id="collapseIcon">▼</span>
-      </div>
-      <div class="collapse-content" id="collapseContent">
-        <div class="days-log"><div class="days-log-header">Kunlik qaydlar</div><div id="daysLogBody"></div></div>
+  <!-- ═══ BILLBOARD ═══ -->
+  <section class="billboard" id="billboard">
+    <div class="billboard-bg"></div>
+    <div class="billboard-content">
+      <div class="bb-name" id="bbName"></div>
+      <div class="bb-notes-area">
+        <p class="bb-text" id="bbText"><span class="bb-cursor" id="bbCursor"></span></p>
+        <div class="bb-status" id="bbStatus"></div>
       </div>
     </div>
-  </div>
-  <div class="card-footer">
-    <button class="btn btn-ghost" onclick="goPage(2)">Orqaga</button>
-    <button class="btn btn-ghost" onclick="saveDay(false)">+ Keyingi kun</button>
-    <button class="btn btn-success" onclick="saveDay(true)">✅ Tugatish</button>
-  </div>
-</div>
+  </section>
 
-<!-- PAGE 4 RESULT: Summary cards ABOVE table, action buttons at bottom -->
-<div class="card hidden" id="page4">
-  <div class="card-header">
-    <div class="card-tag">Hisobot tayyor</div>
-    <div class="card-title" id="resultDriverName"></div>
-    <div class="card-sub" id="resultDateRange"></div>
-  </div>
-  <div class="card-body">
-    <!-- SUMMARY CARDS (jami, o'rtacha, ish haqi) tepada -->
-    <div class="result-summary-area">
-      <div class="summary-cards">
-        <div class="summary-card">
-          <div class="sc-label">Jami yurilgan</div>
-          <div class="sc-value" id="sumTotal">—</div>
-          <div style="font-size:11px; color:var(--text-soft); margin-top:4px;">km</div>
-        </div>
-        <div class="summary-card">
-          <div class="sc-label">O'rtacha kunlik</div>
-          <div class="sc-value" id="sumAvg">—</div>
-          <div style="font-size:11px; color:var(--text-soft); margin-top:4px;">km/kun</div>
-        </div>
-        <div class="summary-card highlight">
-          <div class="sc-label">Ish haqi (12% chegirma)</div>
-          <div class="sc-value" id="sumSalary">—</div>
-          <div style="font-size:11px; color:var(--accent); margin-top:4px;">so'm</div>
-        </div>
+  <!-- ═══ LIST SECTION ═══ -->
+  <section class="list-section">
+    <div class="list-header">
+      <div class="list-meta">
+        <span class="list-title">Qaydlar</span>
+        <span class="list-count" id="listCount">0</span>
+      </div>
+      <div class="list-controls">
+        <select class="status-filter" id="statusFilter">
+          <option value="all">Hammasi</option>
+          <option value="kutilmoqda">Kutilmoqda</option>
+          <option value="muvaffaqiyatli">Muvaffaqiyatli</option>
+          <option value="bekor">Bekor qilindi</option>
+        </select>
+        <button class="fab" id="fabList" aria-label="Yangi qayd">+</button>
       </div>
     </div>
-    <!-- DETAIL TABLE -->
-    <div class="result-section">
-      <div class="result-section-title">Kunlik tafsilot</div>
-      <table class="result-table">
-        <thead>
-          <tr><th>Sana</th><th style="text-align:right">Ertalab</th><th style="text-align:right">Kechqurun</th><th style="text-align:right">Km</th></tr>
-        </thead>
-        <tbody id="resultTableBody"></tbody>
-      </table>
+    <div class="notes-list" id="notesList">
+      <div class="empty-state" id="emptyState">
+        <span class="empty-icon">✦</span>
+        <span class="empty-text">Hali qayd yo'q</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ADD SHEET ═══ -->
+  <div class="overlay" id="addOverlay"></div>
+  <div class="bottom-sheet" id="addSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <span class="sheet-title">Yangi qayd</span>
+      <button class="sheet-close" id="addSheetClose">✕</button>
+    </div>
+    <input class="note-title-input" id="titleInput" placeholder="Sarlavha..." maxlength="80" />
+    <textarea class="note-textarea" id="noteInput" placeholder="Fikringizni yozing..." rows="6"></textarea>
+    <div class="sheet-foot">
+      <select class="status-select" id="statusSelect">
+        <option value="kutilmoqda">Kutilmoqda</option>
+        <option value="muvaffaqiyatli">Muvaffaqiyatli</option>
+        <option value="bekor">Bekor qilindi</option>
+      </select>
+      <button class="btn-save" id="addSaveBtn">Saqlash</button>
     </div>
   </div>
-  <!-- ACTION BUTTONS: yangi hisobot, yuklab olish, ulashish -->
-  <div class="action-row">
-    <button class="btn btn-ghost" onclick="resetAll()">🔄 Yangi hisobot</button>
-    <button class="btn btn-primary" onclick="downloadXLSX()">📎 Yuklab olish</button>
-    <button class="btn btn-success" onclick="shareFile()">📤 Ulashish</button>
-  </div>
-</div>
 
-<script>
-// --- STATE ---
-let state = {
-  driver: '',
-  days: [],        // {date, early, evening, km}
-  currentDate: null
-};
-let collapseOpen = false;   // default collapsed
-
-// --- HELPERS ---
-function formatDate(isoStr) {
-  const d = new Date(isoStr + 'T00:00:00');
-  return d.toLocaleDateString('uz-UZ', { day: '2-digit', month: '2-digit', year: 'numeric' });
-}
-
-function goPage(n) {
-  const pages = ['page1','page2','page3','page4'];
-  pages.forEach((id,i) => {
-    document.getElementById(id).classList.toggle('hidden', i !== n-1);
-  });
-  updateProgress(n);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (n === 3) refreshPage3UI();
-}
-
-function updateProgress(n) {
-  const wrap = document.getElementById('progressWrap');
-  if (n === 1) { wrap.style.display = 'none'; return; }
-  wrap.style.display = 'block';
-  const steps = document.getElementById('progressSteps');
-  steps.innerHTML = '';
-  const total = 3;
-  for (let i=1;i<=total;i++) {
-    const dot = document.createElement('div');
-    dot.className = 'step-dot';
-    if (i < n-1) dot.classList.add('done');
-    else if (i === n-1) dot.classList.add('active');
-    steps.appendChild(dot);
-  }
-  const labels = ['', 'Xaydovchi', 'Maʼlumot', 'Hisobot'];
-  document.getElementById('progressLabel').innerText = labels[n-1] + (n===4 ? '' : ` — ${n-1}/${total}`);
-}
-
-function confirmDriver() {
-  const sel = document.getElementById('driverSelect');
-  const errDiv = document.getElementById('errDriver');
-  if (!sel.value) { errDiv.classList.add('show'); return; }
-  errDiv.classList.remove('show');
-  state.driver = sel.value;
-  state.days = [];
-  collapseOpen = false;
-  if (document.getElementById('collapseContent')) document.getElementById('collapseContent').classList.remove('open');
-  if (document.getElementById('collapseIcon')) document.getElementById('collapseIcon').innerHTML = '▼';
-  initPage3();
-  goPage(3);
-}
-
-function initPage3() {
-  const today = new Date();
-  state.currentDate = today;
-  setDateInput(today);
-  refreshPage3UI();
-}
-
-function setDateInput(d) { document.getElementById('dateInput').value = d.toISOString().split('T')[0]; }
-function adjustDate(delta) {
-  const input = document.getElementById('dateInput');
-  const d = new Date(input.value);
-  d.setDate(d.getDate() + delta);
-  input.value = d.toISOString().split('T')[0];
-}
-
-function refreshPage3UI() {
-  const count = state.days.length;
-  document.getElementById('driverNameTop').innerText = state.driver;
-  document.getElementById('driverInitialAvatar').innerText = state.driver.charAt(0).toUpperCase();
-  document.getElementById('driverStatsTop').innerHTML = `${count} kun kiritildi`;
-  document.getElementById('dayCounterText').innerHTML = `${count+1}-kun`;
-  
-  const earlyInput = document.getElementById('spidEarly');
-  if (count > 0) {
-    const prev = state.days[count-1];
-    earlyInput.placeholder = `Oldingi: ${prev.evening} km`;
-  } else {
-    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
-    earlyInput.placeholder = `${yesterday.toLocaleDateString('uz-UZ')} kechqurungi`;
-  }
-  if (count > 0) {
-    const lastDate = new Date(state.days[count-1].date);
-    lastDate.setDate(lastDate.getDate() + 1);
-    setDateInput(lastDate);
-  }
-  renderDaysLogCollapse();
-}
-
-function renderDaysLogCollapse() {
-  const container = document.getElementById('daysLogBody');
-  if (!container) return;
-  if (state.days.length === 0) {
-    container.innerHTML = `<div class="days-log-row" style="justify-content:center; color:var(--text-soft);">Hali hech qanday kun kiritilmagan</div>`;
-    return;
-  }
-  container.innerHTML = state.days.map(d => `
-    <div class="days-log-row">
-      <span class="d-label">📆 ${formatDate(d.date)}</span>
-      <span class="d-km">+${d.km.toLocaleString()} km</span>
+  <!-- ═══ DETAIL / EDIT MODAL ═══ -->
+  <div class="overlay" id="detailOverlay"></div>
+  <div class="detail-modal" id="detailModal">
+    <div class="detail-toolbar">
+      <button class="tool-btn" id="editToggleBtn" title="Tahrirlash">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+      <select class="detail-status-sel" id="detailStatusSel">
+        <option value="kutilmoqda">Kutilmoqda</option>
+        <option value="muvaffaqiyatli">Muvaffaqiyatli</option>
+        <option value="bekor">Bekor qilindi</option>
+      </select>
+      <button class="tool-btn tool-delete" id="detailDeleteBtn" title="O'chirish">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      </button>
     </div>
-  `).join('');
-}
 
-function toggleCollapse() {
-  const content = document.getElementById('collapseContent');
-  const icon = document.getElementById('collapseIcon');
-  collapseOpen = !collapseOpen;
-  if (collapseOpen) {
-    content.classList.add('open');
-    icon.innerHTML = '▲';
-  } else {
-    content.classList.remove('open');
-    icon.innerHTML = '▼';
-  }
-}
+    <!-- paper area — view and edit share this -->
+    <div class="detail-paper" id="detailPaper">
+      <div class="detail-date" id="detailDate"></div>
+      <div class="detail-title" id="detailTitle"></div>
+      <input class="detail-title-edit" id="detailTitleEdit" placeholder="Sarlavha..." maxlength="80" />
+      <!-- VIEW mode -->
+      <div class="detail-body" id="detailBody"></div>
+      <!-- EDIT mode -->
+      <textarea class="detail-edit-area" id="detailEditArea"></textarea>
+    </div>
 
-function saveDay(finish) {
-  const dateVal = document.getElementById('dateInput').value;
-  const earlyRaw = document.getElementById('spidEarly').value.trim();
-  const eveningRaw = document.getElementById('spidEvening').value.trim();
-  const errDiv = document.getElementById('errDay');
-  if (!dateVal) { showErr(errDiv, 'Sanani tanlang'); return; }
-  if (earlyRaw === '') { showErr(errDiv, 'Ertalabki km ni kiriting'); return; }
-  if (eveningRaw === '') { showErr(errDiv, 'Kechqurungi km ni kiriting'); return; }
-  const early = parseFloat(earlyRaw);
-  const evening = parseFloat(eveningRaw);
-  if (isNaN(early) || isNaN(evening)) { showErr(errDiv, 'Faqat son kiriting'); return; }
-  if (evening < early) { showErr(errDiv, 'Kechqurun ertalabdan kichik bo‘lmasligi kerak'); return; }
-  errDiv.classList.remove('show');
-  const km = evening - early;
-  state.days.push({ date: dateVal, early, evening, km });
-  document.getElementById('spidEarly').value = '';
-  document.getElementById('spidEvening').value = '';
-  if (finish) {
-    if (state.days.length === 0) { showErr(errDiv, 'Kamida 1 kun kiriting'); return; }
-    showResult();
-  } else {
-    refreshPage3UI();
-  }
-}
+    <button class="detail-close" id="detailClose">Yopish</button>
+  </div>
 
-function showErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
+  <!-- ═══ CONFIRM DIALOG ═══ -->
+  <div class="overlay" id="confirmOverlay"></div>
+  <div class="confirm-box" id="confirmBox">
+    <p class="confirm-msg">Bu qaydni o'chirishni tasdiqlaysizmi?</p>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" id="confirmCancel">Bekor</button>
+      <button class="confirm-ok" id="confirmOk">O'chirish</button>
+    </div>
+  </div>
 
-function showResult() {
-  const days = state.days;
-  const totalKm = days.reduce((s,d) => s + d.km, 0);
-  const avgKm = days.length ? (totalKm / days.length).toFixed(1) : 0;
-  const netSalary = Math.round(totalKm * 1100 * 0.88);
-  
-  document.getElementById('resultDriverName').innerHTML = state.driver;
-  const first = formatDate(days[0].date);
-  const last = formatDate(days[days.length-1].date);
-  document.getElementById('resultDateRange').innerHTML = `${first} ${days.length>1 ? '— '+last : ''}  •  ${days.length} kun`;
-  
-  const tbody = document.getElementById('resultTableBody');
-  tbody.innerHTML = days.map(d => `
-    <tr>
-      <td>${formatDate(d.date)}</td>
-      <td class="num">${d.early.toLocaleString()}</td>
-      <td class="num">${d.evening.toLocaleString()}</td>
-      <td class="num km-highlight">+${d.km.toLocaleString()}</td>
-    </tr>
-  `).join('');
-  
-  document.getElementById('sumTotal').innerHTML = totalKm.toLocaleString();
-  document.getElementById('sumAvg').innerHTML = avgKm;
-  document.getElementById('sumSalary').innerHTML = netSalary.toLocaleString();
-  goPage(4);
-}
-
-// XLSX
-function buildWorkbook() {
-  const days = state.days;
-  const totalKm = days.reduce((s,d) => s + d.km, 0);
-  const netSalary = Math.round(totalKm * 1100 * 0.88);
-  const wb = XLSX.utils.book_new();
-  const rows = [
-    ['Xaydovchi:', state.driver],
-    ['Hisobot sanasi:', new Date().toLocaleDateString('uz-UZ')],
-    [],
-    ['Sana', 'Ertalabki (km)', 'Kechqurungi (km)', 'Kunlik yurilgan (km)']
-  ];
-  days.forEach(d => rows.push([formatDate(d.date), d.early, d.evening, d.km]));
-  rows.push([], ['Jami yurilgan (km):', totalKm], ['Ish haqi (so‘m, 12% soliq):', netSalary]);
-  const ws = XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols'] = [{wch:18},{wch:16},{wch:18},{wch:22}];
-  XLSX.utils.book_append_sheet(wb, ws, 'Hisobot');
-  return wb;
-}
-function downloadXLSX() { XLSX.writeFile(buildWorkbook(), `${state.driver.replace(/ /g,'_')}_hisobot.xlsx`); }
-async function shareFile() {
-  const wb = buildWorkbook();
-  const filename = `${state.driver.replace(/ /g,'_')}_hisobot.xlsx`;
-  const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-  const blob = new Blob([wbout], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-  const file = new File([blob], filename, {type: blob.type});
-  if (navigator.canShare && navigator.canShare({files: [file]})) {
-    try { await navigator.share({files: [file], title: state.driver+' — Hisobot', text: 'Km va ish haqi'}); } catch(e) { if(e.name !== 'AbortError') downloadXLSX(); }
-  } else { downloadXLSX(); alert('Ulashish qo‘llanmaydi, fayl yuklab olindi.'); }
-}
-function resetAll() { state = { driver: '', days: [], currentDate: null }; document.getElementById('driverSelect').value = ''; document.getElementById('spidEarly').value = ''; document.getElementById('spidEvening').value = ''; collapseOpen = false; goPage(1); }
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
