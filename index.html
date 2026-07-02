@@ -1,114 +1,408 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Diss — Qaydlar</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Ehtirom Plus Reports</title>
+<link rel="icon" href="ehtiromplusicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest-950:#0c211a;
+    --forest-900:#123528;
+    --forest-800:#1a4a36;
+    --forest-700:#236149;
+    --leaf-500:#4fa876;
+    --leaf-400:#6fc190;
+    --mist-50:#f5f8f6;
+    --mist-100:#eaf1ed;
+    --paper:#ffffff;
+    --ink-900:#132420;
+    --ink-500:#5c7268;
+    --line:#dde7e1;
+    --shadow: 0 12px 30px -12px rgba(12,33,26,0.18);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html,body{
+    height:100%;
+  }
+
+  body{
+    font-family:'Manrope', sans-serif;
+    background:var(--paper);
+    color:var(--ink-900);
+    overflow-x:hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+
+  /* ---------- LOADING SCREEN ---------- */
+  #loader{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    background:var(--paper);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:22px;
+    transition:opacity 0.7s ease, visibility 0.7s ease;
+  }
+
+  #loader.hide{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+  }
+
+  .loader-ring{
+    position:relative;
+    width:92px;
+    height:92px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .loader-ring::before,
+  .loader-ring::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:1.5px solid var(--leaf-400);
+  }
+
+  .loader-ring::before{
+    animation:pulse-ring 1.8s ease-out infinite;
+  }
+
+  .loader-ring::after{
+    animation:pulse-ring 1.8s ease-out infinite 0.6s;
+  }
+
+  @keyframes pulse-ring{
+    0%{ transform:scale(0.75); opacity:0.9; }
+    100%{ transform:scale(1.9); opacity:0; }
+  }
+
+  .loader-logo{
+    width:56px;
+    height:56px;
+    border-radius:16px;
+    object-fit:cover;
+    background: none;
+    position:relative;
+    z-index:2;
+  }
+
+  .loader-word{
+    font-family:'Sora', sans-serif;
+    font-weight:700;
+    font-size:19px;
+    letter-spacing:0.02em;
+    color:var(--ink-900);
+    text-align:center;
+  }
+
+  .loader-word span{
+    display:block;
+    font-family:'Manrope', sans-serif;
+    font-weight:500;
+    font-size:12.5px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--ink-500);
+    margin-top:6px;
+  }
+
+  .loader-bar{
+    width:140px;
+    height:2px;
+    border-radius:2px;
+    background:var(--mist-100);
+    overflow:hidden;
+  }
+
+  .loader-bar::after{
+    content:"";
+    display:block;
+    width:40%;
+    height:100%;
+    background:var(--leaf-500);
+    border-radius:2px;
+    animation:sweep 1.1s ease-in-out infinite;
+  }
+
+  @keyframes sweep{
+    0%{ transform:translateX(-100%); }
+    100%{ transform:translateX(350%); }
+  }
+
+  /* ---------- MAIN PAGE ---------- */
+  .top-accent{
+    height:3px;
+    width:100%;
+    background:linear-gradient(90deg, var(--forest-900), var(--leaf-500), var(--forest-900));
+    background-size:200% 100%;
+    animation:accent-shift 6s ease-in-out infinite;
+  }
+
+  @keyframes accent-shift{
+    0%,100%{ background-position:0% 50%; }
+    50%{ background-position:100% 50%; }
+  }
+
+  main{
+    min-height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:56px 20px 40px;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity 0.7s ease 0.15s, transform 0.7s ease 0.15s;
+  }
+
+  main.show{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .brand{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    margin-bottom:44px;
+  }
+
+  .brand-logo{
+    width:64px;
+    height:64px;
+    border-radius:18px;
+    object-fit:cover;
+    background: none;
+  }
+
+  .brand-name{
+    font-family:'Sora', sans-serif;
+    font-weight:800;
+    font-size:22px;
+    color:var(--forest-950);
+    text-align:center;
+    letter-spacing:-0.01em;
+  }
+
+  .brand-tag{
+    font-size:13px;
+    color:var(--ink-500);
+    text-align:center;
+    max-width:320px;
+    line-height:1.5;
+  }
+
+  .routes{
+    width:100%;
+    max-width:420px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+
+  .route-card{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:18px 18px;
+    text-decoration:none;
+    color:inherit;
+    box-shadow:0 2px 8px rgba(0,0,0,0.04);
+    transition:transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .route-card::before{
+    content:"";
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:3px;
+    background:var(--leaf-500);
+    transform:scaleY(0);
+    transform-origin:bottom;
+    transition:transform 0.3s ease;
+  }
+
+  .route-card:hover,
+  .route-card:focus-visible{
+    transform:translateY(-3px);
+    border-color:var(--leaf-400);
+    box-shadow:0 18px 34px -14px rgba(12,33,26,0.18);
+  }
+
+  .route-card:hover::before,
+  .route-card:focus-visible::before{
+    transform:scaleY(1);
+  }
+
+  .route-card:focus-visible{
+    outline:2px solid var(--forest-700);
+    outline-offset:3px;
+  }
+
+  .route-icon{
+    flex:none;
+    width:46px;
+    height:46px;
+    border-radius:13px;
+    background:var(--mist-100);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--forest-800);
+  }
+
+  .route-icon svg{
+    width:22px;
+    height:22px;
+  }
+
+  .route-body{
+    flex:1;
+    min-width:0;
+  }
+
+  .route-title{
+    font-family:'Sora', sans-serif;
+    font-weight:700;
+    font-size:15.5px;
+    color:var(--ink-900);
+    margin-bottom:3px;
+  }
+
+  .route-sub{
+    font-size:12.5px;
+    color:var(--ink-500);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .route-arrow{
+    flex:none;
+    color:var(--ink-500);
+    transition:transform 0.25s ease, color 0.25s ease;
+  }
+
+  .route-card:hover .route-arrow,
+  .route-card:focus-visible .route-arrow{
+    transform:translateX(3px);
+    color:var(--forest-800);
+  }
+
+  footer{
+    margin-top:48px;
+    font-size:11.5px;
+    color:var(--ink-500);
+    text-align:center;
+    letter-spacing:0.02em;
+  }
+
+  @media (min-width:640px){
+    main{ padding-top:80px; }
+    .brand-logo{ width:76px; height:76px; border-radius:22px; }
+    .brand-name{ font-size:26px; }
+    .routes{ max-width:460px; gap:16px; }
+    .route-card{ padding:22px 22px; border-radius:20px; }
+    .route-icon{ width:52px; height:52px; border-radius:15px; }
+  }
+</style>
 </head>
 <body>
 
-  <!-- ═══ BILLBOARD ═══ -->
-  <section class="billboard" id="billboard">
-    <div class="billboard-bg"></div>
-    <div class="billboard-content">
-      <div class="bb-name" id="bbName"></div>
-      <div class="bb-notes-area">
-        <p class="bb-text" id="bbText"><span class="bb-cursor" id="bbCursor"></span></p>
-        <div class="bb-status" id="bbStatus"></div>
-      </div>
-    </div>
-  </section>
+<div id="loader">
+  <div class="loader-ring">
+    <img class="loader-logo" src="ehtiromplus.png" alt="Ehtirom Plus">
+  </div>
+  <div class="loader-word">
+    Ehtirom Plus
+    <span>Reports</span>
+  </div>
+  <div class="loader-bar"></div>
+</div>
 
-  <!-- ═══ LIST SECTION ═══ -->
-  <section class="list-section">
-    <div class="list-header">
-      <div class="list-meta">
-        <span class="list-title">Qaydlar</span>
-        <span class="list-count" id="listCount">0</span>
-      </div>
-      <div class="list-controls">
-        <select class="status-filter" id="statusFilter">
-          <option value="all">Hammasi</option>
-          <option value="kutilmoqda">Kutilmoqda</option>
-          <option value="muvaffaqiyatli">Muvaffaqiyatli</option>
-          <option value="bekor">Bekor qilindi</option>
-        </select>
-        <button class="fab" id="fabList" aria-label="Yangi qayd">+</button>
-      </div>
-    </div>
-    <div class="notes-list" id="notesList">
-      <div class="empty-state" id="emptyState">
-        <span class="empty-icon">✦</span>
-        <span class="empty-text">Hali qayd yo'q</span>
-      </div>
-    </div>
-  </section>
+<div class="top-accent"></div>
 
-  <!-- ═══ ADD SHEET ═══ -->
-  <div class="overlay" id="addOverlay"></div>
-  <div class="bottom-sheet" id="addSheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-header">
-      <span class="sheet-title">Yangi qayd</span>
-      <button class="sheet-close" id="addSheetClose">✕</button>
-    </div>
-    <input class="note-title-input" id="titleInput" placeholder="Sarlavha..." maxlength="80" />
-    <textarea class="note-textarea" id="noteInput" placeholder="Fikringizni yozing..." rows="6"></textarea>
-    <div class="sheet-foot">
-      <select class="status-select" id="statusSelect">
-        <option value="kutilmoqda">Kutilmoqda</option>
-        <option value="muvaffaqiyatli">Muvaffaqiyatli</option>
-        <option value="bekor">Bekor qilindi</option>
-      </select>
-      <button class="btn-save" id="addSaveBtn">Saqlash</button>
-    </div>
+<main id="main">
+  <div class="brand">
+    <img class="brand-logo" src="ehtiromplus.png" alt="Ehtirom Plus">
+    <div class="brand-name">Ehtirom Plus Reports</div>
+    <div class="brand-tag">Kerakli bo'limni tanlang</div>
   </div>
 
-  <!-- ═══ DETAIL / EDIT MODAL ═══ -->
-  <div class="overlay" id="detailOverlay"></div>
-  <div class="detail-modal" id="detailModal">
-    <div class="detail-toolbar">
-      <button class="tool-btn" id="editToggleBtn" title="Tahrirlash">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      </button>
-      <select class="detail-status-sel" id="detailStatusSel">
-        <option value="kutilmoqda">Kutilmoqda</option>
-        <option value="muvaffaqiyatli">Muvaffaqiyatli</option>
-        <option value="bekor">Bekor qilindi</option>
-      </select>
-      <button class="tool-btn tool-delete" id="detailDeleteBtn" title="O'chirish">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-      </button>
-    </div>
+  <nav class="routes">
+    <a class="route-card" href="https://ehtirom-driver.github.io" target="_blank" rel="noopener">
+      <span class="route-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l1.6-4.8A2 2 0 0 1 6.5 7h11a2 2 0 0 1 1.9 1.2L21 13"/><path d="M3 13h18v4a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-4z"/><circle cx="7.5" cy="14.5" r="1.2"/><circle cx="16.5" cy="14.5" r="1.2"/></svg>
+      </span>
+      <span class="route-body">
+        <span class="route-title">Haydovchi</span>
+      </span>
+      <span class="route-arrow" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </span>
+    </a>
 
-    <!-- paper area — view and edit share this -->
-    <div class="detail-paper" id="detailPaper">
-      <div class="detail-date" id="detailDate"></div>
-      <div class="detail-title" id="detailTitle"></div>
-      <input class="detail-title-edit" id="detailTitleEdit" placeholder="Sarlavha..." maxlength="80" />
-      <!-- VIEW mode -->
-      <div class="detail-body" id="detailBody"></div>
-      <!-- EDIT mode -->
-      <textarea class="detail-edit-area" id="detailEditArea"></textarea>
-    </div>
+    <a class="route-card" href="https://sodiqov.uz/eht.elektr" target="_blank" rel="noopener">
+      <span class="route-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13.5H11L10 22l9-13H12.5L13 2z"/></svg>
+      </span>
+      <span class="route-body">
+        <span class="route-title">Elektr hisobi</span>
+      </span>
+      <span class="route-arrow" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </span>
+    </a>
 
-    <button class="detail-close" id="detailClose">Yopish</button>
-  </div>
+    <a class="route-card" href="https://sodiqov.uz/eht.market" target="_blank" rel="noopener">
+      <span class="route-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l1.2-3.6A1 1 0 0 1 6.14 3.6h11.72a1 1 0 0 1 .94.76L20 8"/><path d="M4 8h16l-1 11.2A1.6 1.6 0 0 1 17.4 20.7H6.6A1.6 1.6 0 0 1 5 19.2L4 8z"/><path d="M9 11.5a3 3 0 0 0 6 0"/></svg>
+      </span>
+      <span class="route-body">
+        <span class="route-title">Market</span>
+      </span>
+      <span class="route-arrow" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </span>
+    </a>
+  </nav>
 
-  <!-- ═══ CONFIRM DIALOG ═══ -->
-  <div class="overlay" id="confirmOverlay"></div>
-  <div class="confirm-box" id="confirmBox">
-    <p class="confirm-msg">Bu qaydni o'chirishni tasdiqlaysizmi?</p>
-    <div class="confirm-btns">
-      <button class="confirm-cancel" id="confirmCancel">Bekor</button>
-      <button class="confirm-ok" id="confirmOk">O'chirish</button>
-    </div>
-  </div>
+  <footer>Ehtirom Plus &bullet; by Data Analyst</footer>
+</main>
 
-  <script src="script.js"></script>
+<script>
+  window.addEventListener('load', function () {
+    var loader = document.getElementById('loader');
+    var main = document.getElementById('main');
+    setTimeout(function () {
+      loader.classList.add('hide');
+      main.classList.add('show');
+    }, 1200);
+  });
+</script>
+
 </body>
 </html>
